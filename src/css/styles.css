@@ -1,3 +1,10 @@
 body {
   background-color: lightblue;
 }
+
+img {
+  max-width: 25vh;
+  max-height: 25vh;
+  display: inline-block;
+  margin: 25px 10px;
+}

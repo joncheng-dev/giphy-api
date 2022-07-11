@@ -1,4 +1,4 @@
-import $ from "jquery";
+import $, { data } from "jquery";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/styles.css";
@@ -24,10 +24,18 @@ $(document).ready(function () {
     request.open("GET", url, true);
     request.send();
   });
+  // Search for gif by trending
+  $("#").click(function () {
+    // Trending
+  });
 
+  // Still need spaces in between
   function getElements(response) {
-    for (let i = 0; i <= 50; i++) {
-      $(".showResults").text(`${response.data[i].id}`);
+    let htmlDisplay = "";
+    for (let i = 0; i < response.data.length; i++) {
+      htmlDisplay += `<a href="${response.data[i].images.original.url}"><img src="${response.data[i].images.original.url}" alt="${response.data[i].title}"></a>`;
     }
+    $(".showResults").html(`${htmlDisplay}`);
+    //  end of html display ---- alt="${response.data[i]}"
   }
 });
