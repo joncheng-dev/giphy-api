@@ -2,6 +2,7 @@ import $, { data } from "jquery";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/styles.css";
+import apiService from "./api-service.js";
 
 // User Interface Logic
 $(document).ready(function () {
@@ -9,52 +10,37 @@ $(document).ready(function () {
   $("#searchKeyword").click(function () {
     const keyword = $("#keyword").val();
     $("#keyword").val("");
-
-    let request = new XMLHttpRequest();
-    const url = `https://api.giphy.com/v1/gifs/search?q=${keyword}&api_key=${process.env.API_KEY}`;
-
-    request.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-        const response = JSON.parse(this.responseText);
-        getElements(response);
-      }
-    };
-
-    request.open("GET", url, true);
-    request.send();
+    const address = `https://api.giphy.com/v1/gifs/search?q=${keyword}&api_key=${process.env.API_KEY}`;
+    apiCall(address);
   });
   // Search for gifs by trending
   $("#searchTrending").click(function () {
     // Trending
-    let request = new XMLHttpRequest();
-    const url = `https://api.giphy.com/v1/gifs/trending?api_key=${process.env.API_KEY}`;
-
-    request.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-        const response = JSON.parse(this.responseText);
-        getElements(response);
-      }
-    };
-
-    request.open("GET", url, true);
-    request.send();
+    const address = `https://api.giphy.com/v1/gifs/trending?api_key=${process.env.API_KEY}`;
+    apiCall(address);
   });
   // Search for gifs by random
   $("#searchRandom").click(function () {
     // Random
-    let request = new XMLHttpRequest();
-    const url = `https://api.giphy.com/v1/gifs/random?api_key=${process.env.API_KEY}`;
-
-    request.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-        const response = JSON.parse(this.responseText);
-        getElements(response);
-      }
-    };
-
-    request.open("GET", url, true);
-    request.send();
+    const address = `https://api.giphy.com/v1/gifs/random?api_key=${process.env.API_KEY}`;
+    apiCall(address);
   });
+  // Makes an API call.
+  function apiCall(address) {
+    let promise = apiService.getResults(address);
+
+    promise.then(
+      function (response) {
+        const body = JSON.parse(response);
+        getElements(body);
+      },
+      function (error) {
+        $(".showErrors").text(
+          `There was an error processing your request: ${error}`
+        );
+      }
+    );
+  }
   // Parses data and selects images to display to HTML
   function getElements(response) {
     let htmlDisplay = "";
